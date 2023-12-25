@@ -67,7 +67,7 @@ return (
   <Products />
   </ScrollView>
 
-  <Menu />
+  {/* <Menu /> */}
 </SafeAreaView>
 
 
