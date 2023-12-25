@@ -19,7 +19,7 @@ export default function TabNavigation() {
         }}
       
       />
-            <Tab.Screen   
+            {/* <Tab.Screen   
         name="Heart"
         component={ProductDetail}
         options={{
@@ -29,7 +29,7 @@ export default function TabNavigation() {
           ),
         }}
        
-      />
+      /> */}
       <Tab.Screen name="Settings" component={Category} />
     </Tab.Navigator>
   );

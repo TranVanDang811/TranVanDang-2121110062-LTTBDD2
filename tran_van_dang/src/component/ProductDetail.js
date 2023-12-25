@@ -1,61 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import product_image from '../../assets/Intersect.jpg'
+import React from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import product_image from '../../assets/Back.jpg'
+import { useNavigation } from '@react-navigation/native';
+const ProductDetail = ({ route }) => {
+  const { product } = route.params;
+  const navigation = useNavigation();
+  const goBack = () => {
+    navigation.goBack();
+  };
+  return (
+    <SafeAreaView style={styles.container}> 
+     <TouchableOpacity onPress={goBack} style={styles.backButton}>
+       <Image  className="pr-3" source={product_image} />
+       </TouchableOpacity>
+      <Image style={styles.image} source={{ uri: product.image }} />
+      <View style={styles.detailsContainer}>
+        <Text style={styles.title}>{product.title}</Text>
+        <Text style={styles.price}>{`${product.price}$`}</Text>
+        {/* Add more details here based on your product structure */}
+      </View>
+    <Button title='Thêm vào giỏ hàng'></Button>
+    </SafeAreaView>
+  );
+};
 
-
-export default function ProductDetail() {
-return (
-<View>
-    <Text className="text-2xl pt-3 pl-2">Tất cả sản phẩm</Text>
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-    <View style={styles.bg}>
-        <Image className="pr-3" source={product_image} />
-        <Text className="text-black pl-2  pt-1">Sport Band</Text>
-        <View style={{ flexDirection: 'row' }}>
-            <Text className="text-black pl-2  pt-1">200$</Text>
-            <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-        </View>
-    </View>
-
-    <View style={styles.bg}>
-        <Image className="pr-3" source={product_image} />
-        <Text className="text-black pl-2  pt-1">Sport Band</Text>
-        <View style={{ flexDirection: 'row' }}>
-            <Text className="text-black pl-2  pt-1">200$</Text>
-            <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-        </View>
-    </View>
-    <View style={styles.bg}>
-        <Image className="pr-3" source={product_image} />
-        <Text className="text-black pl-2  pt-1">Sport Band</Text>
-        <View style={{ flexDirection: 'row' }}>
-            <Text className="text-black pl-2  pt-1">200$</Text>
-            <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-        </View>
-    </View>
-    <View style={styles.bg}>
-        <Image className="pr-3" source={product_image} />
-        <Text className="text-black pl-2  pt-1">Sport Band</Text>
-        <View style={{ flexDirection: 'row' }}>
-            <Text className="text-black pl-2  pt-1">200$</Text>
-            <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-        </View>
-    </View>
-
-</View>
-</View>
-
-);
-}
 const styles = StyleSheet.create({
-
-bg:{
-
-// backgroundColor:"#000000",
-margin:13,
-width:169,
-height:206,
-// borderWidth: 1,
-},
-
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor:"#fff"
+  },
+  image: {
+    width: '100%',
+    height: 500,
+    resizeMode: 'cover',
+  },
+  detailsContainer: {
+    marginTop: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  price: {
+    fontSize: 18,
+    color: 'green',
+    marginTop: 5,
+  },
+  // Add styles for additional details if needed
 });
+
+export default ProductDetail;

@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, View,ActivityIndicator, SafeAreaView } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, View,ActivityIndicator, SafeAreaView, TouchableOpacity } from 'react-native';
 import product_image from '../../assets/Intersect.jpg'
 import Banner from './Banner';
 import Products from './Products';
 import Header from './Header';
 import Menu from './Menu';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function Home() {
@@ -29,6 +30,7 @@ export default function Home() {
   
       fetchData();
     }, []);
+    const navigation = useNavigation();
 return (
   
 
@@ -44,6 +46,11 @@ return (
     {data && (
       <View style={{ flexDirection: 'row' }}>
         {data.map((item, index) => (
+           <TouchableOpacity
+           key={index}
+           style={styles.bg}
+           onPress={() => navigation.navigate('ProductDetail', { product: item })}
+         >
           <View key={index} style={styles.bg}>
             <Image className="pr-3" style={{ width: 150, height: 150 }} source={{ uri: item.image }} />
             <View style={{ width: 150, overflow: 'hidden' }}>
@@ -60,6 +67,7 @@ return (
               <Text className="text-black pl-2 pt-1">Thêm giỏ hàng</Text>
             </View>
           </View>
+          </TouchableOpacity>
         ))}
       </View>
     )}
