@@ -31,6 +31,18 @@ export default function Home() {
       fetchData();
     }, []);
     const navigation = useNavigation();
+    const addToCart = (product) => {
+      const existingItem = cart.find(item => item.id === product.id);
+  
+      if (existingItem) {
+        const updatedCart = cart.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+        setCart(updatedCart);
+      } else {
+        setCart([...cart, { ...product, quantity: 1 }]);
+      }
+    };
 return (
   
 
@@ -64,7 +76,7 @@ return (
             </View>
             <View className="flex flex-row">
               <Text className="text-black pl-2 pt-1">{item.price}$</Text>
-              <Text className="text-black pl-2 pt-1">Thêm giỏ hàng</Text>
+              <Text className="text pl-2 pt-1" onPress={addToCart}>Thêm giỏ hàng</Text>
             </View>
           </View>
           </TouchableOpacity>
