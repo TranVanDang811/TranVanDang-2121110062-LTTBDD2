@@ -1,147 +1,64 @@
-// import { StatusBar } from 'expo-status-bar';
-// import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-// import product_image from '../../assets/Intersect.jpg'
-
-
-// export default function Home() {
-// return (
-// <View>
-//     <Text className="text-2xl pt-3 pl-2">Tất cả sản phẩm</Text>
-//     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-//     <View style={styles.bg}>
-//         <Image className="pr-3" source={product_image} />
-//         <Text className="text-black pl-2  pt-1">Sport Band</Text>
-//         <View style={{ flexDirection: 'row' }}>
-//             <Text className="text-black pl-2  pt-1">200$</Text>
-//             <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-//         </View>
-//     </View>
-
-//     <View style={styles.bg}>
-//         <Image className="pr-3" source={product_image} />
-//         <Text className="text-black pl-2  pt-1">Sport Band</Text>
-//         <View style={{ flexDirection: 'row' }}>
-//             <Text className="text-black pl-2  pt-1">200$</Text>
-//             <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-//         </View>
-//     </View>
-//     <View style={styles.bg}>
-//         <Image className="pr-3" source={product_image} />
-//         <Text className="text-black pl-2  pt-1">Sport Band</Text>
-//         <View style={{ flexDirection: 'row' }}>
-//             <Text className="text-black pl-2  pt-1">200$</Text>
-//             <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-//         </View>
-//     </View>
-//     <View style={styles.bg}>
-//         <Image className="pr-3" source={product_image} />
-//         <Text className="text-black pl-2  pt-1">Sport Band</Text>
-//         <View style={{ flexDirection: 'row' }}>
-//             <Text className="text-black pl-2  pt-1">200$</Text>
-//             <Text className="text-black pl-2  pt-1">Thêm giỏ hàng</Text>
-//         </View>
-//     </View>
-
-// </View>
-// </View>
-
-// );
-// }
-// const styles = StyleSheet.create({
-
-// bg:{
-
-// // backgroundColor:"#000000",
-// margin:13,
-// width:169,
-// height:206,
-// // borderWidth: 1,
-// },
-
-// });
 import React, { useEffect, useState } from 'react';
-import { Text, View, Image, Button, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, Image, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import Toast from 'react-native-toast-message';
+import { byToCart } from '../redux/cartReducer';
+import { icons } from '../../constants';
 
-const Products = () => {
-  const [products, setProducts] = useState(null);
+const Products = ({ data, searchText }) => {
   const navigation = useNavigation();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const [hoverStates, setHoverStates] = useState({});
-
-  const handleMouseEnter = (productId) => {
-    setHoverStates({
-      ...hoverStates,
-      [productId]: true,
-    });
-  };
-
-  const handleMouseLeave = (productId) => {
-    setHoverStates({
-      ...hoverStates,
-      [productId]: false,
-    });
-  };
-
+  const dispatch = useDispatch();
+  
+  const filteredData = data.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
   const handleProductPress = (productId) => {
     navigation.navigate('ProductDetail', { productId });
   };
 
-  const handleAddToCart = (product) => {
-    console.log(`Đã thêm sản phẩm vào giỏ hàng:`, product);
-    navigation.navigate('Cart', { product }); // Truyền thông tin sản phẩm tới màn hình giỏ hàng
+  const addToCart = (product) => {
+    const productData = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      thumbnail: product.thumbnail,
+    };
+    dispatch(byToCart(productData));
+    Toast.show({
+      type: 'success',
+      text1: 'Sản phẩm đã được thêm vào giỏ hàng',
+    });
   };
-  
-  
+
   return (
-    <ScrollView>
-      <Text style={styles.heading}>SẢN PHẨM</Text>
-      {products && (
+    <SafeAreaView>
+      <Text className="pl-2 font-bold text-xl">Sản Phẩm Nổi Bật</Text>
+      {filteredData.length > 0 ? (
         <View style={styles.productList}>
-          {products.map((item, index) => (
+          {filteredData.map((item, index) => (
             <TouchableOpacity
               onPress={() => handleProductPress(item.id)}
               style={[styles.productItem, index % 2 !== 0 ? styles.secondItem : null]}
               key={item.id}
-              onMouseEnter={() => handleMouseEnter(item.id)}
-              onMouseLeave={() => handleMouseLeave(item.id)}
             >
               <View style={styles.productDetails}>
-                <Image source={{ uri: item.image }} style={styles.productImage} />
-                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.productTitle}>
+                <Image source={{ uri: item.thumbnail }} style={styles.productImage} />
+                <Text numberOfLines={1}  >
                   {item.title}
                 </Text>
-                <View style={styles.buttonAndPriceContainer}>
-                  <Text style={styles.productPrice}>Giá: ${item.price}</Text>
-                  <TouchableOpacity
-                    style={[
-                      styles.buttonContainer,
-                      { backgroundColor: hoverStates[item.id] ? 'red' : 'aquamarine' },
-                    ]}
-                    onPress={() => handleAddToCart(item)}
-                  >
-                    <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ color: 'black', paddingLeft: 2 }}>{item.price}$</Text>
+                  <TouchableOpacity onPress={() => addToCart(item)}>
+                    <Text style={{ paddingLeft: 2, fontWeight: 'bold' }}>Thêm giỏ hàng</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </TouchableOpacity>
           ))}
         </View>
+      ) : (
+        <Text className="text-center items-center text-2xl m-5">Không có sản phẩm</Text>
       )}
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -149,7 +66,7 @@ const styles = StyleSheet.create({
   productList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-justifyContent: 'space-between',
+    justifyContent: 'space-between',
     padding: 10,
     backgroundColor: '#f7f7f7',
   },
@@ -167,55 +84,24 @@ justifyContent: 'space-between',
     shadowRadius: 3,
     elevation: 3,
   },
-  buttonAndPriceContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-  },
-  buttonText: {
-    
-    textAlign: 'center',
-  },
   secondItem: {
     marginLeft: '2%',
   },
-  
-  heading: {
-    paddingTop: 10,
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
+
   productDetails: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: 8, // Thêm padding cho khoảng cách giữa các phần tử bên trong productDetails
+    padding: 8,
   },
   productImage: {
     width: '100%',
-    height: '40%',
+    height: '70%',
     aspectRatio: 1,
     resizeMode: 'cover',
-    marginBottom: 4, // Điều chỉnh khoảng cách dưới ảnh
+    marginBottom: 4,
   },
-  productTitle: {
-    fontSize: 17,
-    marginBottom: 4, // Điều chỉnh khoảng cách giữa title và giá
-    maxWidth: '100%',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-  productPrice: {
-    fontSize: 15,
-    marginBottom: 4, // Điều chỉnh khoảng cách giữa giá và nút
-  },
-  buttonContainer: {
-    borderRadius: 10,
-    overflow: 'hidden',
-    padding: 8, // Thêm padding cho nút
-    marginTop: 4, // Điều chỉnh khoảng cách giữa giá và nút
-  },
-})  
+
+});
 
 export default Products;
