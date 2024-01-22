@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { icons } from "../../../constants";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Category() {
   const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -24,59 +33,33 @@ export default function Category() {
 
     fetchCategories();
   }, []);
+  const handlePressCategory = (category)=>{
+    navigation.navigate("ListCategory",{
+      category:category
+    });
+  }
+  const goListCategory = (category) => {
+    navigation.navigate("ListCategory");
+  };
+  // const handleCategoryPress = (category) => {
+  //   setSelectedCategory(category);
+  // };
   return (
     <View>
-      <Text className="pl-2 font-bold text-xl">Danh Mục Sản Phẩm</Text>
-      {/* <View className="flex flex-row" style={styles.gridContainer}>
-   
-        <View  style={styles.gridRow}>
-          
-          <View style={styles.gridColumn}>
-            <View style={styles.bg}>
-              <Image style={styles.icon} source={icons.laptop} />
-              <Text style={styles.text}>Điện thoại</Text>
-            </View>
-          </View>
-          <View style={styles.gridColumn}>
-            <View style={styles.bg}>
-              <Image style={styles.icon} source={icons.headphones} />
-              <Text style={styles.text}>Điện thoại</Text>
-            </View>
-          </View>
-          <View style={styles.gridColumn}>
-            <View style={styles.bg}>
-              <Image style={styles.icon} source={icons.smartphone} />
-              <Text style={styles.text}>Điện thoại</Text>
-            </View>
-          </View>
-        </View>
-         
-        <View style={styles.gridRow}>
-          <View style={styles.gridColumn}>
-            <View style={styles.bg}>
-              <Image style={styles.icon} source={icons.smartphone} />
-              <Text style={styles.text}>Điện thoại</Text>
-            </View>
-          </View>
-          <View style={styles.gridColumn}>
-            <View style={styles.bg}>
-              <Image style={styles.icon} source={icons.laptop} />
-              <Text style={styles.text}>Điện thoại</Text>
-            </View>
-          </View>
-          <View style={styles.gridColumn}>
-            <View style={styles.bg}>
-              <Image style={styles.icon} source={icons.headphones} />
-              <Text style={styles.text}>Điện thoại</Text>
-            </View>
-          </View>
-        </View>
-      </View> */}
+      <TouchableOpacity onPress={goListCategory}>
+        <Text className="pl-2 font-bold text-xl">Danh Mục Sản Phẩm</Text>
+      </TouchableOpacity>
       <ScrollView horizontal>
         {categories.map((category, index) => (
-          <View className="m-2 border-gray-400 rounded bg-gray-400 p-3 items-center  ">
-            <Text className="uppercase text-white">{category}</Text>
-          </View>
+          <TouchableOpacity
+            key={index}
+            onPress={()=>handlePressCategory(category)}
+          >
+            <View className="m-2 border-gray-400 rounded bg-gray-400 p-3 items-center  ">
+              <Text className="uppercase text-white">{category}</Text>
+            </View>
+            
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>

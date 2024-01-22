@@ -6,11 +6,12 @@ import Toast from 'react-native-toast-message';
 import { byToCart } from '../redux/cartReducer';
 import { icons } from '../../constants';
 
-const Products = ({ data, searchText }) => {
+const Products = ({ data, searchText, selectedCategory }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   
-  const filteredData = data.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()));
+  const filteredData = data.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase())&&
+  (!selectedCategory || item.category === selectedCategory));
   const handleProductPress = (productId) => {
     navigation.navigate('ProductDetail', { productId });
   };

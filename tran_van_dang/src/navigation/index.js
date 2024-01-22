@@ -8,6 +8,7 @@ import Cart from "../component/Cart";
 import LoginScreen from "../screens/login";
 import Profile from "../screens/profile/Profile";
 import { AuthProvider } from "../screens/AuthContext";
+import ListCategory from "../screens/category/ListCategory";
 const Stack = createNativeStackNavigator();
 
 const Router = () => {
@@ -24,6 +25,7 @@ const Router = () => {
         <Stack.Screen name="Cart" component={Cart} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="ListCategory" component={ListCategory} />
       </Stack.Navigator>
       </AuthProvider>
     </NavigationContainer>
